@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import SpinnerCarregando from '../biblioteca/SpinnerCarregando.js'
 
 export default function RegistrarConta(props) {
     const [usuario, setUsuario] = useState('');
     const [senha, setSenha] = useState('');
+    const [exibirSpinnerCarregando, setExibirSpinnerCarregando] = useState(false);
 
     useEffect(() => {
         if (usuario !== '' && senha !== '')
@@ -26,6 +28,8 @@ export default function RegistrarConta(props) {
 
     async function registrarUsuario(event) {
         try {
+            setExibirSpinnerCarregando(true);
+
             let jbToken = sessionStorage.getItem("jbToken");
 
             var payloadRegistrarConta = {
@@ -59,29 +63,39 @@ export default function RegistrarConta(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
     return (
         <>
-            <div>
+            <div className="form-group col-sm-4">
                 <h4 >Registrar novo usuário</h4>
                 <hr />
-                <div >
+
+                <div>
                     <label id="lblUsuario">Usuário</label>
-                    <input type="text" id="txtUsuario" />
+                    <input type="text" className="form-control" id="txtUsuario" />
                 </div>
                 <div>
                     <label id="lblSenha">Senha</label>
-                    <input type="text" id="txtSenha" />
-                </div>
-                <div >
-                    <label id="lblConfirmarSenha">Confirmar Senha</label>
-                    <input type="text" id="txtConfirmarSenha" />
+                    <input type="text" className="form-control" id="txtSenha" />
                 </div>
                 <div>
-                    <button id="submitRegistroUsuario" onClick={(event) => validarLogin(event)}>Registrar</button>
+                    <label id="lblConfirmarSenha">Confirmar Senha</label>
+                    <input type="text" className="form-control" id="txtConfirmarSenha" />
                 </div>
+                <br />
+                <div>
+                    <button id="submitRegistroUsuario" className="form-control btn btn-secondary" onClick={(event) => validarLogin(event)}>Registrar</button>
+                </div>
+                <br/>
+                {
+                    exibirSpinnerCarregando ? (
+                        <SpinnerCarregando msgAuxiliar={''} />
+                    ) : null
+                }
             </div>
         </>
     )

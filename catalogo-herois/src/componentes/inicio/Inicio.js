@@ -27,23 +27,32 @@ export default function Inicio(props) {
     return (
         <>
             <div className="container">
-                {
-                    !usuarioLogado ? (
-                        <div>
-                            <RegistrarConta />
-                            <hr />
-                            <Login />
-                        </div>
-                    ) : (
-                            <div>
-                                <button className="btn btn-light" onClick={() => desconectarConta()}>Desconectar</button>
-                            <hr />
-                            <Heroi />
-                            <hr />
-                            <Categoria />
-                        </div>
-                    )
-                }
+                <div className="row justify-content-center">
+                    <div className="col-md-2 justify-content-center">
+                    <span></span>
+                    </div>
+                    <div className="col-md-8 justify-content-center">
+                        {
+                            !usuarioLogado ? (
+                                <div className="row">
+                                    <RegistrarConta />
+                                    <Login />
+                                </div>
+                            ) : (
+                                <div>
+                                    <button className="btn btn-light" onClick={() => desconectarConta()}>Desconectar</button>
+                                    <hr />
+                                    <Heroi />
+                                    <hr />
+                                    <Categoria />
+                                </div>
+                            )
+                        }
+                    </div>
+                    <div className="col-md-2 justify-content-center">
+                        <span></span>
+                    </div>
+                </div>
             </div>
         </>
     )
