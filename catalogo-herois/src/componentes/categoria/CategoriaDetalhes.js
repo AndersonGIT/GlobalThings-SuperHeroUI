@@ -13,7 +13,7 @@ export default function CategoriaDetalhes(props) {
             setExibirSpinnerCarregando(true);
             let jbToken = sessionStorage.getItem("jbToken");
 
-            const response = await fetch("https://localhost:44397/api/Categoria?idCategoria=" + idCategoria, {
+            const response = await fetch("https://localhost:44397/api/Categoria/obterCategoria?idCategoria=" + idCategoria, {
                 method: "GET",
                 headers: {
                     "Authorization": "bearer " + jbToken

@@ -18,7 +18,7 @@ export default function HeroiFormulario(props) {
 
             let jbToken = sessionStorage.getItem("jbToken");
 
-            const response = await fetch("https://localhost:44397/api/Heroi?idHeroi=" + idHeroi, {
+            const response = await fetch("https://localhost:44397/api/Heroi/obterHeroi?idHeroi=" + idHeroi, {
                 method: "GET",
                 headers: {
                     "Authorization": "bearer " + jbToken
@@ -55,7 +55,7 @@ export default function HeroiFormulario(props) {
 
             let jbToken = sessionStorage.getItem("jbToken");
 
-            const response = await fetch("https://localhost:44397/api/Categoria", {
+            const response = await fetch("https://localhost:44397/api/Categoria/listarCategorias", {
                 method: "GET",
                 headers: {
                     "Authorization": "bearer " + jbToken
@@ -102,7 +102,7 @@ export default function HeroiFormulario(props) {
                     IdCategoria: categoriaSelecionada
                 }
                 if (tipoAcao === "Alterar") {
-                    response = await fetch("https://localhost:44397/api/Heroi", {
+                    response = await fetch("https://localhost:44397/api/Heroi/atualizarHeroi", {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -111,7 +111,7 @@ export default function HeroiFormulario(props) {
                         body: JSON.stringify(payLoad)
                     });
                 } else {
-                    response = await fetch("https://localhost:44397/api/Heroi", {
+                    response = await fetch("https://localhost:44397/api/Heroi/inserirHeroi", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -178,7 +178,7 @@ export default function HeroiFormulario(props) {
                             heroiNaoEncontrado === true && tipoAcao === "Alterar") ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Herói na base."} /> : (
                             <div className="row">
                                 {
-                                    <div>
+                                    <div className="form-group">
                                         {
                                             tipoAcao === "Alterar" ?
                                                 (
@@ -190,7 +190,8 @@ export default function HeroiFormulario(props) {
                                                 ) : null
                                         }
                                         <label>{tipoAcao === "Alterar" ? 'Novo Nome:' : 'Nome Herói:'}</label>
-                                        <input type="text" id="nomeHeroi" />
+                                                <input className="form-control" type="text" id="nomeHeroi" />
+                                        <br/>
                                         <Form.Select aria-label="Selecionar Categoria" id="categoriaSelect" onChange={(event) => selectionarCategoria(event)}>
                                             <option value={-1} >Selecione uma categoria...</option>))
                                             {
@@ -199,8 +200,9 @@ export default function HeroiFormulario(props) {
                                             }
                                             ))
                                         </Form.Select>
+                                        <br />
                                         <p>
-                                            <input type="button" value="Salvar" onClick={(event) => salvarDados(event)} />
+                                            <input type="button" className="btn btn-secondary" value="Salvar" onClick={(event) => salvarDados(event)} />
                                         </p>
                                     </div>
                                 }

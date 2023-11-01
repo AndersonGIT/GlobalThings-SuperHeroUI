@@ -14,7 +14,7 @@ export default function CategoriaFormulario(props) {
 
             let jbToken = sessionStorage.getItem("jbToken");
 
-            const response = await fetch("https://localhost:44397/api/Categoria?idCategoria=" + idCategoria, {
+            const response = await fetch("https://localhost:44397/api/Categoria/obterCategoria?idCategoria=" + idCategoria, {
                 method: "GET",
                 headers: {
                     "Authorization": "bearer " + jbToken
@@ -60,7 +60,7 @@ export default function CategoriaFormulario(props) {
                     Nome: nomeAlterado
                 }
                 if (tipoAcao === "Alterar") {
-                    response = await fetch("https://localhost:44397/api/Categoria", {
+                    response = await fetch("https://localhost:44397/api/Categoria/atualizarCategoria", {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export default function CategoriaFormulario(props) {
                         body: JSON.stringify(payLoad)
                     });
                 } else {
-                    response = await fetch("https://localhost:44397/api/Categoria", {
+                    response = await fetch("https://localhost:44397/api/Categoria/inserirCategoria", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -124,22 +124,22 @@ export default function CategoriaFormulario(props) {
 
                     (categoriaNaoEncontrada === true && tipoAcao === "Alterar") ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Categorias na base."} /> : (
                         <div className="row">
-                            {
-                                <div>
+                                {
+                                    <div className="form-group">
                                     {
                                         tipoAcao === "Alterar" ?
                                             (
                                                 <div>
-                                                    <p className=""><strong>Id: </strong> <input type="text" id="idCategoria" value={tipoAcao === "Alterar" ? categoriaDados.Id : ''} /> </p>
+                                                    <p className=""><strong>Id: </strong> <input className="from-control" type="text" id="idCategoria" value={tipoAcao === "Alterar" ? categoriaDados.Id : ''} /> </p>
                                                     <label className="">Nome atual da Categoria:</label>
                                                     <strong>{categoriaDados.Nome}</strong>
                                                 </div>
                                             ) : null
                                     }
-                                    <label>{tipoAcao === "Alterar" ? 'Novo Nome:' : 'Nome Categoria:'}</label>
-                                    <input type="text" id="nomeCategoria" />
+                                        <label>{tipoAcao === "Alterar" ? 'Novo Nome:' : 'Nome Categoria:'}</label>
+                                        <input type="text" id="nomeCategoria" className="form-control" />
                                     <p>
-                                        <input type="button" value="Salvar" onClick={(event) => salvarDados(event)} />
+                                        <input type="button" className="btn btn-secondary" value="Salvar" onClick={(event) => salvarDados(event)} />
                                     </p>
                                 </div>
                             }

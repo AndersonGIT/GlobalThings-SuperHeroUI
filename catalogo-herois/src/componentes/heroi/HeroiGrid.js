@@ -38,7 +38,7 @@ export default function HeroiGrid(props) {
             setExibirSpinnerCarregando(true);
             let jbToken = sessionStorage.getItem("jbToken");
 
-            const response = await fetch("https://localhost:44397/api/Heroi", {
+            const response = await fetch("https://localhost:44397/api/Heroi/listarHerois", {
                 method: "GET",
                 headers: {
                     "Authorization": "bearer " + jbToken
@@ -89,7 +89,7 @@ export default function HeroiGrid(props) {
             if (idSelecionado > 0) {
                 let jbToken = sessionStorage.getItem("jbToken");
 
-                const response = await fetch("https://localhost:44397/api/Heroi?idHeroi=" + idSelecionado, {
+                const response = await fetch("https://localhost:44397/api/Heroi/removerHeroi?idHeroi=" + idSelecionado, {
                     method: "DELETE",
                     headers: {
                         "Authorization": "bearer " + jbToken

@@ -14,7 +14,7 @@ export default function HeroiDetalhes(props) {
 
             let jbToken = sessionStorage.getItem("jbToken");
 
-            const response = await fetch("https://localhost:44397/api/Heroi?idHeroi=" + idHeroi, {
+            const response = await fetch("https://localhost:44397/api/Heroi/obterHeroi?idHeroi=" + idHeroi, {
                 method: "GET",
                 headers: {
                     "Authorization": "bearer " + jbToken

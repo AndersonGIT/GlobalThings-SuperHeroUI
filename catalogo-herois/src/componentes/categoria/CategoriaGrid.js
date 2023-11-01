@@ -38,7 +38,7 @@ export default function CategoriaGrid(props) {
             setExibirSpinnerCarregando(true);
             let jbToken = sessionStorage.getItem("jbToken");
 
-            const response = await fetch("https://localhost:44397/api/Categoria", {
+            const response = await fetch("https://localhost:44397/api/Categoria/listarCategorias", {
                 method: "GET",
                 headers: {
                     "Authorization": "bearer " + jbToken
@@ -88,7 +88,7 @@ export default function CategoriaGrid(props) {
             if (idSelecionado > 0) {
                 let jbToken = sessionStorage.getItem("jbToken");
 
-                const response = await fetch("https://localhost:44397/api/Categoria?idCategoria=" + idSelecionado, {
+                const response = await fetch("https://localhost:44397/api/Categoria/removerCategoria?idCategoria=" + idSelecionado, {
                     method: "DELETE",
                     headers: {
                         "Authorization": "bearer " + jbToken
