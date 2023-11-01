@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import RegistrosNaoEncontrados from '../biblioteca/RegistrosNaoEncontrados.js'
+import SpinnerCarregando from '../biblioteca/SpinnerCarregando.js'
 
 export default function CategoriaFormulario(props) {
     const { idCategoria, tipoAcao } = props;
     const [categoriaDados, setCategoriaDados] = useState({});
     const [categoriaNaoEncontrada, setCategoriaNaoEncontrada] = useState(false);
+    const [exibirSpinnerCarregando, setExibirSpinnerCarregando] = useState(false);
 
     async function consultarCategoria() {
         try {
+            setExibirSpinnerCarregando(true);
+
             let jbToken = sessionStorage.getItem("jbToken");
 
             const response = await fetch("https://localhost:44397/api/Categoria?idCategoria=" + idCategoria, {
@@ -32,11 +36,15 @@ export default function CategoriaFormulario(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
     async function salvarDados(event) {
         try {
+            setExibirSpinnerCarregando(true);
+
             debugger;
             var response = null;
 
@@ -95,6 +103,8 @@ export default function CategoriaFormulario(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
@@ -108,29 +118,33 @@ export default function CategoriaFormulario(props) {
     return (
         <>
             {
-                (
-                    categoriaNaoEncontrada === true && tipoAcao === "Alterar") ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Categorias na base."} /> : (
-                    <div className="row">
-                        {
-                            <div>
-                                {
-                                    tipoAcao === "Alterar" ?
-                                        (
-                                            <div>
-                                                <p className=""><strong>Id: </strong> <input type="text" id="idCategoria" value={tipoAcao === "Alterar" ? categoriaDados.Id : ''} /> </p>
-                                                <label className="">Nome atual da Categoria:</label>
-                                                <strong>{categoriaDados.Nome}</strong>
-                                            </div>
-                                        ) : null
-                                }
-                                <label>{tipoAcao === "Alterar" ? 'Novo Nome:' : 'Nome Categoria:'}</label>
-                                <input type="text" id="nomeCategoria" />
-                                <p>
-                                    <input type="button" value="Salvar" onClick={(event) => salvarDados(event)} />
-                                </p>
-                            </div>
-                        }
-                    </div>
+                exibirSpinnerCarregando ? (
+                    <SpinnerCarregando msgAuxiliar={''} />
+                ) : (
+
+                    (categoriaNaoEncontrada === true && tipoAcao === "Alterar") ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Categorias na base."} /> : (
+                        <div className="row">
+                            {
+                                <div>
+                                    {
+                                        tipoAcao === "Alterar" ?
+                                            (
+                                                <div>
+                                                    <p className=""><strong>Id: </strong> <input type="text" id="idCategoria" value={tipoAcao === "Alterar" ? categoriaDados.Id : ''} /> </p>
+                                                    <label className="">Nome atual da Categoria:</label>
+                                                    <strong>{categoriaDados.Nome}</strong>
+                                                </div>
+                                            ) : null
+                                    }
+                                    <label>{tipoAcao === "Alterar" ? 'Novo Nome:' : 'Nome Categoria:'}</label>
+                                    <input type="text" id="nomeCategoria" />
+                                    <p>
+                                        <input type="button" value="Salvar" onClick={(event) => salvarDados(event)} />
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                    )
                 )
             }
         </>

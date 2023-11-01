@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import RegistrosNaoEncontrados from '../biblioteca/RegistrosNaoEncontrados.js'
+import SpinnerCarregando from '../biblioteca/SpinnerCarregando.js'
 
 export default function CategoriaDetalhes(props) {
     const { idCategoria } = props;
     const [categoriaDetalhes, setCategoriaDetalhes] = useState({});
     const [categoriaNaoEncontrada, setCategoriaNaoEncontrada] = useState(false);
+    const [exibirSpinnerCarregando, setExibirSpinnerCarregando] = useState(false);
+
     async function consultarCategoria() {
         try {
+            setExibirSpinnerCarregando(true);
             let jbToken = sessionStorage.getItem("jbToken");
 
             const response = await fetch("https://localhost:44397/api/Categoria?idCategoria=" + idCategoria, {
@@ -31,6 +35,8 @@ export default function CategoriaDetalhes(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
@@ -43,15 +49,19 @@ export default function CategoriaDetalhes(props) {
     return (
         <>
             {
-                categoriaNaoEncontrada === true ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Categorias na base."} /> : (
-                    <div className="row">
-                        {
-                            <div>
-                                <p className=""><strong>Id: </strong> {categoriaDetalhes.Id}</p>
-                                <p className=""><strong>Nome Categoria: </strong>{categoriaDetalhes.Nome}</p>
-                            </div>
-                        }
-                    </div>
+                exibirSpinnerCarregando ? (
+                    <SpinnerCarregando msgAuxiliar={''} />
+                ) : (
+                    categoriaNaoEncontrada === true ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Categorias na base."} /> : (
+                        <div className="row">
+                            {
+                                <div>
+                                    <p className=""><strong>Id: </strong> {categoriaDetalhes.Id}</p>
+                                    <p className=""><strong>Nome Categoria: </strong>{categoriaDetalhes.Nome}</p>
+                                </div>
+                            }
+                        </div>
+                    )
                 )
             }
         </>

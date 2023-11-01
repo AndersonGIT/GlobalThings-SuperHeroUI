@@ -1,7 +1,16 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\catalogo-herois",
+    "\\catalogo-herois\\public",
+    "\\catalogo-herois\\src",
+    "\\catalogo-herois\\src\\componentes",
+    "\\catalogo-herois\\src\\componentes\\biblioteca",
+    "\\catalogo-herois\\src\\componentes\\categoria",
+    "\\catalogo-herois\\src\\componentes\\heroi",
+    "\\catalogo-herois\\src\\componentes\\inicio",
+    "\\catalogo-herois\\src\\componentes\\login"
   ],
-  "SelectedNode": "\\C:\\Users\\ANDERSON\\OneDrive\\Projetos\\GlobalThings\\TesteTecnico\\Sources\\UI",
+  "SelectedNode": "\\catalogo-herois\\src\\componentes\\heroi\\heroiDetalhes.js",
   "PreviewInSolutionExplorer": false
 }

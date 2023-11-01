@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import RegistrosNaoEncontrados from '../biblioteca/RegistrosNaoEncontrados.js'
+import SpinnerCarregando from '../biblioteca/SpinnerCarregando.js'
 
 export default function HeroiDetalhes(props) {
     const { idHeroi } = props;
     const [heroiDetalhes, setHeroiDetalhes] = useState({});
     const [heroiNaoEncontrado, setHeroiNaoEncontrado] = useState(false);
+    const [exibirSpinnerCarregando, setExibirSpinnerCarregando] = useState(false);
 
     async function consultarHeroi() {
         try {
+            setExibirSpinnerCarregando(false);
+
             let jbToken = sessionStorage.getItem("jbToken");
 
             const response = await fetch("https://localhost:44397/api/Heroi?idHeroi=" + idHeroi, {
@@ -21,7 +25,7 @@ export default function HeroiDetalhes(props) {
 
                 if (result) {
                     setHeroiDetalhes(result);
-                }              
+                }
             } else if (response.status === 404) {
                 setHeroiNaoEncontrado(true);
             } else if (response.status === 401) {
@@ -32,6 +36,8 @@ export default function HeroiDetalhes(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
@@ -44,17 +50,22 @@ export default function HeroiDetalhes(props) {
     return (
         <>
             {
-                heroiNaoEncontrado === true ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Heróis na base."} /> : (
-                    <div className="row">
-                        {
-                            <div>
-                                <p className=""><strong>Id: </strong> {heroiDetalhes.Id}</p>
-                                <p className=""><strong>Nome Herói: </strong>{heroiDetalhes.Nome}</p>
-                                <p className=""><strong>Categoria Herói: </strong>{heroiDetalhes.IdCategoria}</p>
-                                <p className=""><strong>Categoria: </strong>{heroiDetalhes.NomeCategoria}</p>
-                            </div>
-                        }
-                    </div>
+                exibirSpinnerCarregando ? (
+                    <SpinnerCarregando msgAuxiliar={''} />
+                ) : (
+
+                    heroiNaoEncontrado === true ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Heróis na base."} /> : (
+                        <div className="row">
+                            {
+                                <div>
+                                    <p className=""><strong>Id: </strong> {heroiDetalhes.Id}</p>
+                                    <p className=""><strong>Nome Herói: </strong>{heroiDetalhes.Nome}</p>
+                                    <p className=""><strong>Categoria Herói: </strong>{heroiDetalhes.IdCategoria}</p>
+                                    <p className=""><strong>Categoria: </strong>{heroiDetalhes.NomeCategoria}</p>
+                                </div>
+                            }
+                        </div>
+                    )
                 )
             }
         </>

@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import HeroiDetalhes from '../heroi/HeroiDetalhes.js'
 import HeroiFormulario from '../heroi/HeroiFormulario.js'
+import SpinnerCarregando from '../biblioteca/SpinnerCarregando.js'
 
 export default function HeroiGrid(props) {
     const [listaHerois, setListaHerois] = useState([]);
@@ -13,6 +14,7 @@ export default function HeroiGrid(props) {
     const [show, setShow] = useState(false);
     const [showFormulario, setShowFormulario] = useState(false);
     const [tpAcao, setTpAcao] = useState('');
+    const [exibirSpinnerCarregando, setExibirSpinnerCarregando] = useState(false);
 
     const handleClose = (modalForm) => {
         if (modalForm) {
@@ -33,6 +35,7 @@ export default function HeroiGrid(props) {
 
     async function listarHerois() {
         try {
+            setExibirSpinnerCarregando(true);
             let jbToken = sessionStorage.getItem("jbToken");
 
             const response = await fetch("https://localhost:44397/api/Heroi", {
@@ -58,6 +61,8 @@ export default function HeroiGrid(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
@@ -138,40 +143,44 @@ export default function HeroiGrid(props) {
 
     return (
         <>
-            <div className="row">
-                <button className="btnCadastrarHeroi" onClick={(event) => inserirHeroi(event)}>Inserir Herói</button>
+            <div className="row col-sm-2">
+                <button className="btnCadastrarHeroi btn btn-primary" onClick={(event) => inserirHeroi(event)}>Inserir Herói</button>
             </div>
             {
-                listaDeHeroisVazia === true ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Herois na base."} /> : (
-                    <div className="row">
-                        <div>
-                            <h2>Lista de Heróis</h2>
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Id</th>
-                                        <th scope="col">Nome Herói</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        listaHerois.map((heroiItem, heroiIndex) => (
-                                            <tr key={heroiIndex}>
-                                                <td className="">{heroiItem.Id}</td>
-                                                <td className="">{heroiItem.Nome}</td>
-                                                <td className=""><button className="btnAbrirDetalhesHeroi btn-primary" value={heroiItem.Id} onClick={(event) => abrirDetalhesHeroi(event)}>Abrir Detalhes</button></td>
-                                                <td className=""><button className="btnAlterarHeroi btn-danger" value={heroiItem.Id} onClick={(event) => alterarHeroi(event)}>Alterar</button></td>
-                                                <td className=""><button className="btnRemoverHeroi btn-danger" value={heroiItem.Id} onClick={(event) => removerHeroi(event)}>Excluir</button></td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
+                exibirSpinnerCarregando ? (
+                    <SpinnerCarregando msgAuxiliar={''} />
+                ) : (
+                    listaDeHeroisVazia === true ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Herois na base."} /> : (
+                        <div className="row">
+                            <div>
+                                <h2>Lista de Heróis</h2>
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Nome Herói</th>
+                                            <th scope="col"></th>
+                                            <th scope="col"></th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            listaHerois.map((heroiItem, heroiIndex) => (
+                                                <tr key={heroiIndex}>
+                                                    <td className="">{heroiItem.Id}</td>
+                                                    <td className="">{heroiItem.Nome}</td>
+                                                    <td className=""><button className="btnAbrirDetalhesHeroi btn btn-secondary" value={heroiItem.Id} onClick={(event) => abrirDetalhesHeroi(event)}>Abrir Detalhes</button></td>
+                                                    <td className=""><button className="btnAlterarHeroi btn btn-warning" value={heroiItem.Id} onClick={(event) => alterarHeroi(event)}>Alterar</button></td>
+                                                    <td className=""><button className="btnRemoverHeroi btn btn-danger" value={heroiItem.Id} onClick={(event) => removerHeroi(event)}>Excluir</button></td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
+                    )
                 )
             }
             <Modal show={show} onHide={() => handleClose(false)}>

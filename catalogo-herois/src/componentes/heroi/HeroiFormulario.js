@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import RegistrosNaoEncontrados from '../biblioteca/RegistrosNaoEncontrados.js'
 import Form from 'react-bootstrap/Form';
+import SpinnerCarregando from '../biblioteca/SpinnerCarregando.js'
 
 export default function HeroiFormulario(props) {
     const { idHeroi, tipoAcao } = props;
@@ -9,9 +10,12 @@ export default function HeroiFormulario(props) {
     const [listaCategorias, setListaCategorias] = useState([]);
     const [listaDeCategoriasVazia, setListaDeCategoriasVazia] = useState(false);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState(-1);
+    const [exibirSpinnerCarregando, setExibirSpinnerCarregando] = useState(false);
 
     async function consultarHeroi() {
         try {
+            setExibirSpinnerCarregando(true);
+
             let jbToken = sessionStorage.getItem("jbToken");
 
             const response = await fetch("https://localhost:44397/api/Heroi?idHeroi=" + idHeroi, {
@@ -40,11 +44,15 @@ export default function HeroiFormulario(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
     async function listarCategorias() {
         try {
+            setExibirSpinnerCarregando(true);
+
             let jbToken = sessionStorage.getItem("jbToken");
 
             const response = await fetch("https://localhost:44397/api/Categoria", {
@@ -67,12 +75,17 @@ export default function HeroiFormulario(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
     async function salvarDados(event) {
         try {
+            setExibirSpinnerCarregando(true);
+
             debugger;
+
             let jbToken = sessionStorage.getItem("jbToken");
 
             var response = null;
@@ -132,6 +145,8 @@ export default function HeroiFormulario(props) {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setExibirSpinnerCarregando(false);
         }
     }
 
@@ -154,39 +169,44 @@ export default function HeroiFormulario(props) {
     return (
         <>
             {
-                listaDeCategoriasVazia ? <span>É necessário registrar pelomenos uma categoria para inserir novos heróis.</span> :
-                    (
-                        heroiNaoEncontrado === true && tipoAcao === "Alterar") ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Herói na base."} /> : (
-                        <div className="row">
-                            {
-                                <div>
-                                    {
-                                        tipoAcao === "Alterar" ?
-                                            (
-                                                <div>
-                                                    <p className=""><strong>Id: </strong> <input type="text" id="idHeroi" value={tipoAcao === "Alterar" ? heroiDados.Id : ''} /> </p>
-                                                    <label className="">Nome atual do Herói:</label>
-                                                    <strong>{heroiDados.Nome}</strong>
-                                                </div>
-                                            ) : null
-                                    }
-                                    <label>{tipoAcao === "Alterar" ? 'Novo Nome:' : 'Nome Herói:'}</label>
-                                    <input type="text" id="nomeHeroi" />
-                                    <Form.Select aria-label="Selecionar Categoria" id="categoriaSelect" onChange={(event) => selectionarCategoria(event)}>
-                                        <option value={-1} >Selecione uma categoria...</option>))
+                exibirSpinnerCarregando ? (
+                    <SpinnerCarregando msgAuxiliar={''} />
+                ) : (
+
+                    listaDeCategoriasVazia ? <span>É necessário registrar pelomenos uma categoria para inserir novos heróis.</span> :
+                        (
+                            heroiNaoEncontrado === true && tipoAcao === "Alterar") ? <RegistrosNaoEncontrados tipoRegistro={"Sem registros de Herói na base."} /> : (
+                            <div className="row">
+                                {
+                                    <div>
                                         {
-                                            listaCategorias.map((categoriaItem, categoriaIndex) => (
-                                                <option key={categoriaIndex} value={categoriaItem.Id} >{categoriaItem.Nome}</option>))
+                                            tipoAcao === "Alterar" ?
+                                                (
+                                                    <div>
+                                                        <p className=""><strong>Id: </strong> <input type="text" id="idHeroi" value={tipoAcao === "Alterar" ? heroiDados.Id : ''} /> </p>
+                                                        <label className="">Nome atual do Herói:</label>
+                                                        <strong>{heroiDados.Nome}</strong>
+                                                    </div>
+                                                ) : null
                                         }
-                                        ))
-                                    </Form.Select>
-                                    <p>
-                                        <input type="button" value="Salvar" onClick={(event) => salvarDados(event)} />
-                                    </p>
-                                </div>
-                            }
-                        </div>
-                    )
+                                        <label>{tipoAcao === "Alterar" ? 'Novo Nome:' : 'Nome Herói:'}</label>
+                                        <input type="text" id="nomeHeroi" />
+                                        <Form.Select aria-label="Selecionar Categoria" id="categoriaSelect" onChange={(event) => selectionarCategoria(event)}>
+                                            <option value={-1} >Selecione uma categoria...</option>))
+                                            {
+                                                listaCategorias.map((categoriaItem, categoriaIndex) => (
+                                                    <option key={categoriaIndex} value={categoriaItem.Id} >{categoriaItem.Nome}</option>))
+                                            }
+                                            ))
+                                        </Form.Select>
+                                        <p>
+                                            <input type="button" value="Salvar" onClick={(event) => salvarDados(event)} />
+                                        </p>
+                                    </div>
+                                }
+                            </div>
+                        )
+                )
             }
         </>
     )

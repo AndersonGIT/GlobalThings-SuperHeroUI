@@ -17,29 +17,6 @@ export default function Inicio(props) {
 
     async function desconectarConta(event) {
         try {
-            //let jbToken = sessionStorage.getItem("jbToken");
-            //var payLoadDesconectar = {
-            //    UsuarioLogin: "",
-            //    UsuarioSenha: ""
-            //}
-
-            //var response = await fetch("https://localhost:44397/api/usuario/desconectarconta", {
-            //    method: "POST",
-            //    headers: {
-            //        "Content-Type": "application/json",
-            //        "Authorization": "bearer " + jbToken
-            //    },
-            //    body: JSON.stringify(payLoadDesconectar)
-            //});
-
-            //if (response.ok) {
-            //    const result = await response.json();
-            //} else if (response.status === 401) {
-            //    sessionStorage.removeItem("jbToken");
-            //    alert("Necessário realizar novamente o login.");
-
-            //    window.location.reload();
-            //}
             sessionStorage.removeItem("jbToken");
             window.location.reload();
         } catch (error) {
@@ -58,8 +35,8 @@ export default function Inicio(props) {
                             <Login />
                         </div>
                     ) : (
-                        <div>
-                            <button onClick={() => desconectarConta()}>Desconectar</button>
+                            <div>
+                                <button className="btn btn-light" onClick={() => desconectarConta()}>Desconectar</button>
                             <hr />
                             <Heroi />
                             <hr />
