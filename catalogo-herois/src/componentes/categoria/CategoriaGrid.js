@@ -33,16 +33,24 @@ export default function CategoriaGrid(props) {
 
     async function listarCategorias() {
         try {
-            debugger;
+            let jbToken = sessionStorage.getItem("jbToken");
+
             const response = await fetch("https://localhost:44397/api/Categoria", {
                 method: "GET",
-            });
+                headers: {
+                    "Authorization": "bearer " + jbToken
+                }            });
 
             if (response.ok) {
                 const result = await response.json();
                 setListaCategorias(result);
             } else if (response.status === 404) {
                 setListaDeCategoriasVazia(true);
+            } else if (response.status === 401) {
+                sessionStorage.removeItem("jbToken");
+                alert("Necessário realizar novamente o login.");
+
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error:", error);
@@ -70,12 +78,21 @@ export default function CategoriaGrid(props) {
             let idSelecionado = event.target.value;
 
             if (idSelecionado > 0) {
+                let jbToken = sessionStorage.getItem("jbToken");
+
                 const response = await fetch("https://localhost:44397/api/Categoria?idCategoria=" + idSelecionado, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "bearer " + jbToken
+                    }
                 });
 
                 if (response.ok) {
                     listarCategorias();
+                } else if (response.status === 401) {
+                    sessionStorage.removeItem("jbToken");
+                    alert("Necessário realizar novamente o login.");
+                    window.location.reload();
                 } else {
                     const result = await response.json();
                     alert(result.Message);

@@ -12,8 +12,13 @@ export default function HeroiFormulario(props) {
 
     async function consultarHeroi() {
         try {
+            let jbToken = sessionStorage.getItem("jbToken");
+
             const response = await fetch("https://localhost:44397/api/Heroi?idHeroi=" + idHeroi, {
                 method: "GET",
+                headers: {
+                    "Authorization": "bearer " + jbToken
+                }
             });
             if (response.ok) {
                 const result = await response.json();
@@ -23,6 +28,11 @@ export default function HeroiFormulario(props) {
                 }
             } else if (response.status === 404) {
                 setHeroiNaoEncontrado(true);
+            } else if (response.status === 401) {
+                sessionStorage.removeItem("jbToken");
+                alert("Necessário realizar novamente o login.");
+
+                window.location.reload();
             } else {
                 const result = await response.json();
 
@@ -35,9 +45,13 @@ export default function HeroiFormulario(props) {
 
     async function listarCategorias() {
         try {
-            debugger;
+            let jbToken = sessionStorage.getItem("jbToken");
+
             const response = await fetch("https://localhost:44397/api/Categoria", {
                 method: "GET",
+                headers: {
+                    "Authorization": "bearer " + jbToken
+                }
             });
 
             if (response.ok) {
@@ -45,6 +59,11 @@ export default function HeroiFormulario(props) {
                 setListaCategorias(result);
             } else if (response.status === 404) {
                 setListaDeCategoriasVazia(true);
+            } else if (response.status === 401) {
+                sessionStorage.removeItem("jbToken");
+                alert("Necessário realizar novamente o login.");
+
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error:", error);
@@ -54,6 +73,8 @@ export default function HeroiFormulario(props) {
     async function salvarDados(event) {
         try {
             debugger;
+            let jbToken = sessionStorage.getItem("jbToken");
+
             var response = null;
 
             let nomeAlterado = document.getElementById("nomeHeroi").value;
@@ -61,12 +82,10 @@ export default function HeroiFormulario(props) {
             if (categoriaSelecionada === -1) {
                 alert("É obrigatório a escolha de uma categoria.");
             }
-            else if (nomeAlterado === '') {
-                alert("Nome do herói é obrigatório.");
-            } else {
+            else {
                 var payLoad = {
                     Id: (tipoAcao === "Alterar" ? document.getElementById("idHeroi").value : -1),
-                    Nome: nomeAlterado,
+                    Nome: nomeAlterado === '' ? heroiDados.Nome : nomeAlterado,
                     IdCategoria: categoriaSelecionada
                 }
                 if (tipoAcao === "Alterar") {
@@ -74,6 +93,7 @@ export default function HeroiFormulario(props) {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
+                            "Authorization": "bearer " + jbToken
                         },
                         body: JSON.stringify(payLoad)
                     });
@@ -82,6 +102,7 @@ export default function HeroiFormulario(props) {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            "Authorization": "bearer " + jbToken
                         },
                         body: JSON.stringify(payLoad)
                     });
@@ -96,8 +117,13 @@ export default function HeroiFormulario(props) {
                         } else {
                             alert("Inserido com sucesso.");
                         }
-                        window.location.href = window.location.href;
+                        window.location.reload();
                     }
+                } else if (response.status === 401) {
+                    sessionStorage.removeItem("jbToken");
+                    alert("Necessário realizar novamente o login.");
+
+                    window.location.reload();
                 } else {
                     const result = await response.json();
 

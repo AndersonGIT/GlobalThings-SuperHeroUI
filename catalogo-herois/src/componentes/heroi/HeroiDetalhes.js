@@ -8,8 +8,13 @@ export default function HeroiDetalhes(props) {
 
     async function consultarHeroi() {
         try {
+            let jbToken = sessionStorage.getItem("jbToken");
+
             const response = await fetch("https://localhost:44397/api/Heroi?idHeroi=" + idHeroi, {
-                method: "GET"
+                method: "GET",
+                headers: {
+                    "Authorization": "bearer " + jbToken
+                }
             });
             if (response.ok) {
                 const result = await response.json();
@@ -19,6 +24,11 @@ export default function HeroiDetalhes(props) {
                 }              
             } else if (response.status === 404) {
                 setHeroiNaoEncontrado(true);
+            } else if (response.status === 401) {
+                sessionStorage.removeItem("jbToken");
+                alert("Necessário realizar novamente o login.");
+
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error:", error);

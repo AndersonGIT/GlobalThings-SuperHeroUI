@@ -33,10 +33,15 @@ export default function HeroiGrid(props) {
 
     async function listarHerois() {
         try {
+            let jbToken = sessionStorage.getItem("jbToken");
+
             const response = await fetch("https://localhost:44397/api/Heroi", {
                 method: "GET",
+                headers: {
+                    "Authorization": "bearer " + jbToken
+                }
             });
-            
+
             if (response.ok) {
                 const result = await response.json();
 
@@ -45,6 +50,11 @@ export default function HeroiGrid(props) {
                 }
             } else if (response.status === 404) {
                 setListaDeHeroisVazia(true);
+            } else if (response.status === 401) {
+                sessionStorage.removeItem("jbToken");
+                alert("Necessário realizar novamente o login.");
+
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error:", error);
@@ -72,17 +82,27 @@ export default function HeroiGrid(props) {
             let idSelecionado = event.target.value;
 
             if (idSelecionado > 0) {
+                let jbToken = sessionStorage.getItem("jbToken");
+
                 const response = await fetch("https://localhost:44397/api/Heroi?idHeroi=" + idSelecionado, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "bearer " + jbToken
+                    }
                 });
 
                 if (response.ok) {
                     listarHerois();
+                } else if (response.status === 401) {
+                    sessionStorage.removeItem("jbToken");
+                    alert("Necessário realizar novamente o login.");
+
+                    window.location.reload();
                 }
             }
         } catch (error) {
             console.error("Error:", error);
-        }        
+        }
     }
 
     async function alterarHeroi(event) {
@@ -114,7 +134,7 @@ export default function HeroiGrid(props) {
         return () => {
             listarHerois();
         }
-    }, []);    
+    }, []);
 
     return (
         <>

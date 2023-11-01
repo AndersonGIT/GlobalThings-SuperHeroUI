@@ -7,8 +7,13 @@ export default function CategoriaDetalhes(props) {
     const [categoriaNaoEncontrada, setCategoriaNaoEncontrada] = useState(false);
     async function consultarCategoria() {
         try {
+            let jbToken = sessionStorage.getItem("jbToken");
+
             const response = await fetch("https://localhost:44397/api/Categoria?idCategoria=" + idCategoria, {
                 method: "GET",
+                headers: {
+                    "Authorization": "bearer " + jbToken
+                }
             });
             if (response.ok) {
                 const result = await response.json();
@@ -18,6 +23,11 @@ export default function CategoriaDetalhes(props) {
                 }
             } else if (response.status === 404) {
                 setCategoriaNaoEncontrada(true);
+            } else if (response.status === 401) {
+                sessionStorage.removeItem("jbToken");
+                alert("Necessário realizar novamente o login.");
+
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error:", error);

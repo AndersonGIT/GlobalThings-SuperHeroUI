@@ -8,8 +8,13 @@ export default function CategoriaFormulario(props) {
 
     async function consultarCategoria() {
         try {
+            let jbToken = sessionStorage.getItem("jbToken");
+
             const response = await fetch("https://localhost:44397/api/Categoria?idCategoria=" + idCategoria, {
                 method: "GET",
+                headers: {
+                    "Authorization": "bearer " + jbToken
+                }
             });
             if (response.ok) {
                 const result = await response.json();
@@ -19,6 +24,11 @@ export default function CategoriaFormulario(props) {
                 }
             } else if (response.status === 404) {
                 setCategoriaNaoEncontrada(true);
+            } else if (response.status === 401) {
+                sessionStorage.removeItem("jbToken");
+                alert("Necessário realizar novamente o login.");
+
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error:", error);
@@ -35,6 +45,8 @@ export default function CategoriaFormulario(props) {
             if (nomeAlterado === '') {
                 alert("Nome da categoria é obrigatório.");
             } else {
+                let jbToken = sessionStorage.getItem("jbToken");
+
                 var payLoad = {
                     Id: (tipoAcao === "Alterar" ? document.getElementById("idCategoria").value : -1),
                     Nome: nomeAlterado
@@ -44,6 +56,7 @@ export default function CategoriaFormulario(props) {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
+                            "Authorization": "bearer " + jbToken
                         },
                         body: JSON.stringify(payLoad)
                     });
@@ -52,6 +65,7 @@ export default function CategoriaFormulario(props) {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            "Authorization": "bearer " + jbToken
                         },
                         body: JSON.stringify(payLoad)
                     });
@@ -66,8 +80,13 @@ export default function CategoriaFormulario(props) {
                         } else {
                             alert("Inserido com sucesso.");
                         }
-                        window.location.href = window.location.href;
+                        window.location.reload();
                     }
+                } else if (response.status === 401) {
+                    sessionStorage.removeItem("jbToken");
+                    alert("Necessário realizar novamente o login.");
+
+                    window.location.reload();
                 } else {
                     const result = await response.json();
 
